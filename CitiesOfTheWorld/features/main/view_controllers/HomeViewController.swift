@@ -32,6 +32,7 @@ class HomeViewController: UIViewController {
             mainVC.view.isHidden = false
         }else{
             mapVC.view.isHidden = false
+            mapVC.updateMarker()
         }
         
     }

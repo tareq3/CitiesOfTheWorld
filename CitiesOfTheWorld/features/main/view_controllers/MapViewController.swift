@@ -44,39 +44,27 @@ class MapViewController: UIViewController {
     
     
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    func updateMarker(){
+        // Do any additional setup after loading the view.
+        let camera = GMSCameraPosition.camera(withLatitude: cities?.first?.lat ?? 34.5166667, longitude: cities?.first?.lon ?? 69.18333440000001, zoom: 6.0)
+        let mapView = GMSMapView.map(withFrame: self.view.frame, camera: camera)
+        self.view.addSubview(mapView)
         
-        itemsToken = MainViewController.cities?.observe(on: DispatchQueue.main, { changes in
-            switch changes {
+        
+        
+        
+        cities?.forEach({ cityDto in
+            let lat  = cityDto.lat
+            let long  = cityDto.lon
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
             
-            case .initial:
-                break
-                
-            case .update(let obj, let deletions, let insertions, let updates):
-                // Do any additional setup after loading the view.
-                let camera = GMSCameraPosition.camera(withLatitude: self.cities?.first?.lat ?? 34.5166667, longitude: self.cities?.first?.lon ?? 69.18333440000001, zoom: 6.0)
-                let mapView = GMSMapView.map(withFrame: self.view.frame, camera: camera)
-                self.view.addSubview(mapView)
-                
-                MainViewController.cities?.forEach({ cityDto in
-                    let lat  = cityDto.lat
-                    let long  = cityDto.lon
-                    let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-                    
-                    let marker = GMSMarker()
-                    //marker.icon = UIImage(named: "one.png")
-                    marker.position = coordinate
-                    marker.title = cityDto.cityName as? String
-                    marker.snippet = cityDto.countryName as? String
-                    marker.appearAnimation = .pop
-                    marker.map = mapView        })
-            case .error:
-                break
-                
-            }
-            
-        })
+            let marker = GMSMarker()
+            //marker.icon = UIImage(named: "one.png")
+            marker.position = coordinate
+            marker.title = cityDto.cityName as? String
+            marker.snippet = cityDto.countryName as? String
+            marker.appearAnimation = .pop
+            marker.map = mapView        })
     }
     
     override func viewWillDisappear(_ animated: Bool) {
